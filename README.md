@@ -20,14 +20,30 @@ listing carries coordinates, so `pwk` caches them and sorts by distance.
 
 ## Install
 
-Python 3.9+, no dependencies.
+Python 3.9+, no dependencies. On a Mac or Linux:
 
     git clone https://github.com/jgalea/pwk.git
     ln -s "$PWD/pwk/pwk.py" ~/.local/bin/pwk
 
+On Windows, in PowerShell, install Python if you don't have it
+(`winget install Python.Python.3.12`), open a new window, and run:
+
+    mkdir "$HOME\pwk" -Force
+    curl.exe -fsSL https://raw.githubusercontent.com/jgalea/pwk/main/pwk.py -o "$HOME\pwk\pwk.py"
+    mkdir "$HOME\bin" -Force
+    Set-Content "$HOME\bin\pwk.cmd" '@py "%USERPROFILE%\pwk\pwk.py" %*'
+    [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$HOME\bin", "User")
+
+Open a new PowerShell window after that so `pwk` is on the PATH. The Windows steps
+haven't been tested on a real Windows machine yet.
+
+The place cache is kept in a `cache` folder next to `pwk.py`.
+
 Set a default origin so you can stop typing it:
 
     export PWK_ORIGIN=porto        # a town name, or "41.15,-8.62"
+
+On Windows that's `[Environment]::SetEnvironmentVariable("PWK_ORIGIN", "porto", "User")`.
 
 ## Usage
 

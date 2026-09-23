@@ -128,7 +128,7 @@ def refresh(quiet=False):
         })
     json.dump({"fetched": dt.date.today().isoformat(), "places": places,
                "categories": sorted(set(cats.values()))},
-              open(f"{CACHE}/places.json", "w"), ensure_ascii=False, indent=1)
+              open(f"{CACHE}/places.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     if not quiet:
         msg = f"cached {len(places)} places, {len(set(cats.values()))} categories"
         print(msg + (f" ({nocoord} skipped: no coordinates)" if nocoord else ""))
@@ -139,7 +139,7 @@ def load():
     if not os.path.exists(path):
         print("no cache yet, fetching...", file=sys.stderr)
         refresh(quiet=True)
-    d = json.load(open(path))
+    d = json.load(open(path, encoding="utf-8"))
     age = (dt.date.today() - dt.date.fromisoformat(d["fetched"])).days
     if age > STALE_DAYS:
         print(f"cache is {age} days old - run `pwk refresh`", file=sys.stderr)
@@ -349,6 +349,9 @@ def cmd_events(a):
 
 
 def main():
+    # A Windows console or pipe may not be UTF-8; print what it can rather than crash.
+    for stream in (sys.stdout, sys.stderr):
+        stream.reconfigure(errors="replace")
     ap = argparse.ArgumentParser(
         prog="pwk",
         description="kids activities in Portugal, from portugalwithkids.pt (unofficial)")
